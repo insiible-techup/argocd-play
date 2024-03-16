@@ -7,8 +7,9 @@ spec:
   - git:
       repoURL: https://github.com/insiible-techup/argocd-play.git
       revision: HEAD
-      directories:
-        - path: prom
+      path: https://github.com/insiible-techup/argocd-play/app/prom.yaml
+      # directories:
+      #   - path: prom
   template:
     metadata:
       name: prom
