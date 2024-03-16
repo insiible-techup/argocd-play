@@ -1,16 +1,37 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: prom
-  namespace: monitoring
 spec:
-  project: default
-  source:
-    chart: kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 57.0.3
-    helm:
-      releaseName: prom
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: monitoring
+  generators:
+  - git:
+      repoURL: https://github.com/insiible-techup/argocd-play.git
+      revision: HEAD
+      directories:
+        - path: prom
+  template:
+    metadata:
+      name: prom
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/insiible-techup/argocd-play.git
+        targetRevision: main
+        path: https://github.com/insiible-techup/argocd-play/prom
+        helm:
+          releaseName: prom
+          valueFile:
+            - values.yml
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: monitoring
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - ApplyOutSyncOnly=true
+        - PruneLast=true
+        - PrunePropagationPolicy=foreground
+        - RespectIgnoreDifferences=true
