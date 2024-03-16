@@ -7,9 +7,8 @@ spec:
   - git:
       repoURL: https://github.com/insiible-techup/argocd-play.git
       revision: HEAD
-      path: https://github.com/insiible-techup/argocd-play/app/prom.yaml
-      # directories:
-      #   - path: prom
+      directories:
+        - path: prom
   template:
     metadata:
       name: prom
@@ -22,6 +21,7 @@ spec:
         helm:
           releaseName: prom
           valueFile:
+            - Chart.yaml
             - values.yml
       destination:
         server: "https://kubernetes.default.svc"
